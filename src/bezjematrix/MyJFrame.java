@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,7 +42,7 @@ public class MyJFrame extends javax.swing.JFrame {
     private int offsetY;
     private int pWidth;
     private int pHeight;
-    private static float stepT=0.001f;
+    private static float stepT=0.02f;
     boolean dragging=false;
     private Map<Integer,Long> factorialCache = new HashMap<Integer,Long>();
     private Map<Pair<Integer,Integer>, Double> polinomCache = new HashMap<>();
@@ -87,6 +88,8 @@ public class MyJFrame extends javax.swing.JFrame {
         drawModeCb = new javax.swing.JCheckBox();
         moveBtn = new javax.swing.JButton();
         progressBar = new javax.swing.JProgressBar();
+        putPointAtObjectBtn = new javax.swing.JButton();
+        putRandomPointBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 153, 153));
@@ -174,6 +177,22 @@ public class MyJFrame extends javax.swing.JFrame {
             }
         });
 
+        putPointAtObjectBtn.setFont(new java.awt.Font("DejaVu Sans Mono", 0, 14)); // NOI18N
+        putPointAtObjectBtn.setText("Put at Object");
+        putPointAtObjectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                putPointAtObjectBtnActionPerformed(evt);
+            }
+        });
+
+        putRandomPointBtn.setFont(new java.awt.Font("DejaVu Sans Mono", 0, 14)); // NOI18N
+        putRandomPointBtn.setText("Put at Random");
+        putRandomPointBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                putRandomPointBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -198,20 +217,28 @@ public class MyJFrame extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(yTf, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(mStepTTf, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(tLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(mStepTTf, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(putPointAtObjectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(cancelBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(redrawBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(drawModeCb)
-                            .addComponent(moveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(drawModeCb)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(putRandomPointBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(moveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(cancelBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(redrawBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -231,9 +258,13 @@ public class MyJFrame extends javax.swing.JFrame {
                                 .addComponent(yLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(yTf)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mDrawButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(mDrawButton)
+                            .addComponent(putPointAtObjectBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(drawModeCb)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(drawModeCb)
+                            .addComponent(putRandomPointBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(moveBtn)
                         .addGap(28, 28, 28)
@@ -243,7 +274,7 @@ public class MyJFrame extends javax.swing.JFrame {
                             .addComponent(redrawBtn)
                             .addComponent(cancelBtn1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE))
                     .addComponent(mCanvasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -499,11 +530,55 @@ public class MyJFrame extends javax.swing.JFrame {
         Thread workerThread = new Thread(r);
         workerThread.start();
     }//GEN-LAST:event_moveBtnActionPerformed
+
+    private void putPointAtObjectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_putPointAtObjectBtnActionPerformed
+        // TODO add your handling code here:
+        List<Point> objektsList = new ArrayList<>();
+        objektsList.addAll(objekts);
+        if(objekts.size()>0){     
+            Point p = getMidPoint(objektsList);
+            p.x-=offsetX;
+            p.y=offsetY-p.y;
+            vertices.add(p);
+            recalculateCurve=true;
+            drawScene();
+        }
+    }//GEN-LAST:event_putPointAtObjectBtnActionPerformed
+
+    private void putRandomPointBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_putRandomPointBtnActionPerformed
+        // TODO add your handling code here:
+        Random rnd = new Random();
+        int maxX=mCanvasPanel.getWidth();
+        int maxY=mCanvasPanel.getHeight();
+        int x=(int) (maxX*rnd.nextFloat())-offsetX;
+        int y=offsetY-(int) (maxY*rnd.nextFloat());
+        vertices.add(new Point(x,y));
+        recalculateCurve=true;
+        drawScene();
+    }//GEN-LAST:event_putRandomPointBtnActionPerformed
     
     private void killDrawThread(){
         if(drawThread!=null && drawThread.isAlive()){
             drawThread.stop();
         }
+    }
+    
+    private static Point getMidPoint(List<Point> objekts){
+        int minX,minY,maxX,maxY;
+        minX=objekts.get(0).x;
+        minY=objekts.get(0).y;
+        maxX=minX;
+        maxY=minY;
+        for(int i =1;i<objekts.size();i++){
+            Point p =objekts.get(i);
+            if (p.x<minX) minX=p.x;
+            if (p.y<minY) minY=p.y;
+            if (p.x>maxX) maxX=p.x;
+            if (p.y>maxY) maxY=p.y;
+        }
+        int centerX=(maxX+minX)/2;
+        int centerY=(maxY+minY)/2;
+        return new Point(centerX,centerY);
     }
     
     /**
@@ -551,6 +626,8 @@ public class MyJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField mStepTTf;
     private javax.swing.JButton moveBtn;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JButton putPointAtObjectBtn;
+    private javax.swing.JButton putRandomPointBtn;
     private javax.swing.JButton redrawBtn;
     private javax.swing.JLabel tLabel;
     private javax.swing.JLabel xLabel;
